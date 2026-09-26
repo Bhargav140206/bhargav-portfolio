@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bhargav Borgaonkar — Game Developer &amp; Unity Programmer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #131316;
+    --panel-alt: #1a1a1e;
+    --border: #2a2a2f;
+    --text: #f2f2f4;
+    --text-dim: #a8a8b0;
+    --text-faint: #707078;
+    --accent: #ffb454;
+    --accent-soft: rgba(255,180,84,0.14);
+    --new: #35d6c4;
+    --font-display: 'JetBrains Mono', ui-monospace, monospace;
+    --font-body: 'Inter', system-ui, sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection{ background: var(--accent-soft); color: var(--accent); }
+
+  a{ color: inherit; text-decoration: none; }
+
+  .wrap{
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  @media (max-width: 640px){
+    .wrap{ padding: 0 20px; }
+  }
+
+  /* background texture */
+  .grain{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10,10,12,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .nav-mark{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-dot{
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .nav-links{
+    display: flex;
+    gap: 28px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .nav-link-btn{
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  .nav-link-btn:hover{ color: var(--accent); }
+  @media (max-width: 640px){
+    .nav-links{ gap: 16px; font-size: 12px; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position: relative;
+    padding: 96px 0 72px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before{
+    content: '';
+    position: absolute;
+    top: -180px;
+    left: -120px;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid{
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (max-width: 900px){
+    .hero-grid{ grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  h1.hero-name{
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(42px, 6.4vw, 76px);
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+  }
+
+  .hero-role{
+    font-size: clamp(17px, 2.4vw, 21px);
+    color: var(--text-dim);
+    max-width: 520px;
+    margin: 0 0 28px;
+  }
+  .hero-role strong{ color: var(--text); font-weight: 600; }
+
+  .hero-tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 40px;
+  }
+  .tag{
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 3px;
+    background: var(--panel);
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .tag:hover{ border-color: var(--accent); color: var(--accent); }
+
+  .btn{
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn-primary{
+    background: var(--accent);
+    color: #201406;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover{ background: #ffc678; }
+  .btn-ghost{ color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--accent); color: var(--accent); }
+
+  /* Hero decorative controller illustration */
+  .hero-art{
+    display: flex;
+    justify-content: center;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+  }
+  .hero-art svg{
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+  }
+  .hero-art circle[stroke="var(--accent)"]{
+    animation: glow 2.4s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{ opacity: 1; }
+    50%{ opacity: 0.45; }
+  }
+  @media (max-width: 900px){
+    .hero-art{ display: none; }
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section{ padding: 80px 0; border-bottom: 1px solid var(--border); }
+  .section-head{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    gap: 20px;
+  }
+  #work .section-head{ align-items: center; }
+  .section-num{
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .section-title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(24px, 3.4vw, 32px);
+    margin: 6px 0 0;
+    letter-spacing: -0.01em;
+  }
+  .section-intro{
+    color: var(--text-dim);
+    max-width: 56ch;
+    font-size: 15px;
+    margin: -18px 0 36px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+  }
+  @media (max-width: 760px){
+    .about-grid{ grid-template-columns: 1fr; gap: 36px; }
+  }
+  .about-text p{
+    color: var(--text-dim);
+    font-size: 16px;
+    margin: 0 0 18px;
+    max-width: 62ch;
+  }
+  .about-text p strong{ color: var(--text); font-weight: 600; }
+
+  /* Snapshot facts panel */
+  .snapshot{
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+  .snapshot-row{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .snapshot-row:last-child{ border-bottom: none; }
+  .snapshot-label{
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+  .snapshot-value{
+    font-size: 14px;
+    color: var(--text);
+    text-align: right;
+  }
+  .snapshot-value.accent{ color: var(--accent); font-weight: 600; }
+
+  /* ---------- PROJECTS ---------- */
+  .level-list{ display: flex; flex-direction: column; }
+  .level-list[hidden]{ display: none; }
+  .level{
+    display: grid;
+    grid-template-columns: 60px 1.4fr 1fr auto;
+    gap: 20px;
+    align-items: start;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    transition: background 0.15s ease;
+  }
+  .level:last-child{ border-bottom: 1px solid var(--border); }
+  .level:hover{ background: var(--panel); }
+  .level-idx{
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text-faint);
+    padding-top: 2px;
+  }
+  .level-main h3{
+    font-family: var(--font-display);
+    font-size: 17px;
+    margin: 0 0 6px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .level-genre{
+    font-size: 12px;
+    font-family: var(--font-display);
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .new-badge{
+    font-family: var(--font-display);
+    font-size: 10px;
+    color: #14171f;
+    background: var(--new);
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.03em;
+    font-weight: 700;
+  }
+  .level-desc{
+    color: var(--text-dim);
+    font-size: 14px;
+    margin: 0;
+    max-width: 46ch;
+  }
+  .level-loop{
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--text-faint);
+    padding-top: 3px;
+  }
+  .level-loop span{ color: var(--text-dim); }
+  .level-link{
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 3px;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    height: fit-content;
+  }
+  .level:hover .level-link{
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 760px){
+    .level{
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 22px 0;
+    }
+    .level-idx{ padding-top: 0; }
+    .level-link{ justify-self: start; }
+  }
+
+  /* ---------- PROCESS ---------- */
+  .process-line{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    align-items: center;
+  }
+  .process-step{
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    background: var(--panel);
+    padding: 10px 16px;
+    border-radius: 3px;
+    margin: 6px 0;
+  }
+  .process-arrow{
+    color: var(--text-faint);
+    padding: 0 10px;
+    font-family: var(--font-display);
+  }
+  .process-note{
+    color: var(--text-dim);
+    max-width: 62ch;
+    margin: 28px 0 0;
+    font-size: 15px;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact{ border-bottom: none; padding-bottom: 96px; }
+  .contact-inner{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 48px;
+  }
+  h2.contact-title{
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(30px, 5.5vw, 52px);
+    margin: 0 0 14px;
+    line-height: 1.04;
+  }
+  h2.contact-title .accent{ color: var(--accent); }
+  .contact-sub{
+    color: var(--text-dim);
+    max-width: 46ch;
+    margin: 0 0 28px;
+  }
+  .contact-links{ display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .contact-card{
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--panel);
+    min-width: 300px;
+    overflow: hidden;
+  }
+  .contact-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s ease;
+  }
+  .contact-row:last-child{ border-bottom: none; }
+  .contact-row:hover{ background: var(--accent-soft); }
+  .contact-row:hover .contact-value{ color: var(--accent); }
+  .contact-label{
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .contact-value{
+    font-size: 14px;
+    color: var(--text);
+    text-align: right;
+    transition: color 0.15s ease;
+  }
+  @media (max-width: 500px){
+    .contact-card{ min-width: 0; width: 100%; }
+  }
+
+  footer{
+    padding: 24px 0 40px;
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--text-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <div class="nav-mark"><span class="nav-dot"></span>BHARGAV.DEV</div>
+    <nav class="nav-links">
+      <button type="button" class="nav-link-btn" data-target="about">About</button>
+      <button type="button" class="nav-link-btn" data-target="work">Work</button>
+      <button type="button" class="nav-link-btn" data-target="process">Process</button>
+      <button type="button" class="nav-link-btn" data-target="contact">Contact</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <h1 class="hero-name">BHARGAV<br>BORGAONKAR</h1>
+      <p class="hero-role">Game Developer &amp; <strong>Unity Programmer</strong>, turning gameplay ideas into playable experiences with Unity and C#.</p>
+      <div class="hero-tags">
+        <span class="tag">Unity 2D &amp; 3D</span>
+        <span class="tag">C#</span>
+        <span class="tag">C++</span>
+        <span class="tag">Gameplay Systems</span>
+        <span class="tag">Game Design</span>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M95 70 H225 C260 70 280 100 280 135 C280 165 262 180 242 180 C226 180 218 170 208 158 C200 148 190 142 160 142 C130 142 120 148 112 158 C102 170 94 180 78 180 C58 180 40 165 40 135 C40 100 60 70 95 70Z" stroke="var(--border)" stroke-width="3"/>
+        <line x1="88" y1="112" x2="88" y2="148" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="70" y1="130" x2="106" y2="130" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="222" cy="118" r="8" stroke="var(--accent)" stroke-width="3"/>
+        <circle cx="248" cy="142" r="8" stroke="var(--accent)" stroke-width="3"/>
+        <circle cx="196" cy="142" r="8" stroke="var(--border)" stroke-width="3"/>
+        <circle cx="222" cy="166" r="8" stroke="var(--border)" stroke-width="3"/>
+        <circle cx="160" cy="106" r="14" stroke="var(--border)" stroke-width="3"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="section-num">00 — About</div>
+        <h2 class="section-title">Design + development</h2>
+      </div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm <strong>Bhargav Borgaonkar</strong>, a game developer who works mostly in Unity and C#. I like taking a rough gameplay idea and actually getting it running — most of what I know today, I picked up by building things myself and poking around inside gameplay systems until they made sense.</p>
+        <p>I've built both <strong>2D and 3D games</strong>, and I'm the kind of person who wants to know why something works the way it does — how movement, collisions and pacing come together to make a game feel right. Game design and level design pull me in the same way.</p>
+        <p>Right now I'm trying to get better the honest way: by building real things, breaking them, and fixing them. I'm looking for a job or internship where I can keep doing that alongside people who've been at it longer than I have.</p>
+      </div>
+      <div class="snapshot">
+        <div class="snapshot-row"><span class="snapshot-label">Focus</span><span class="snapshot-value">Unity · C# · C++</span></div>
+        <div class="snapshot-row"><span class="snapshot-label">Dimensions</span><span class="snapshot-value">2D &amp; 3D</span></div>
+        <div class="snapshot-row"><span class="snapshot-label">Shipped</span><span class="snapshot-value">8 projects</span></div>
+        <div class="snapshot-row"><span class="snapshot-label">Also into</span><span class="snapshot-value">Game &amp; level design</span></div>
+        <div class="snapshot-row"><span class="snapshot-label">Status</span><span class="snapshot-value accent">Open to job &amp; internship roles</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="section-num">01 — Selected work</div>
+        <h2 class="section-title">Projects</h2>
+      </div>
+      <button type="button" id="toggleProjects" class="btn btn-primary">View Projects</button>
+    </div>
+    <p class="section-intro">A set of Unity projects I've built and shipped on my own — spanning arcade, endless-runner, survival and shooter genres, each one built around a clear core loop.</p>
+
+    <div class="level-list" id="projectsList" hidden>
+
+      <div class="level">
+        <div class="level-idx">01</div>
+        <div class="level-main">
+          <h3>Knife Hit <span class="level-genre">Arcade / Casual</span></h3>
+          <p class="level-desc">Timing-based knife-throwing game — throw knives onto a rotating target without hitting the ones already stuck in it.</p>
+        </div>
+        <div class="level-loop">Aim <span>→</span> Throw <span>→</span> Avoid Collision <span>→</span> Score<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/Knife_Hit" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="level">
+        <div class="level-idx">02</div>
+        <div class="level-main">
+          <h3>Awesome Game <span class="level-genre">2D Endless Runner</span></h3>
+          <p class="level-desc">Mobile-style endless runner focused on responsive controls, fair obstacle spawning and gameplay pacing.</p>
+        </div>
+        <div class="level-loop">Run <span>→</span> Jump <span>→</span> Avoid <span>→</span> Score<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/Awesome_Game" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="level">
+        <div class="level-idx">03</div>
+        <div class="level-main">
+          <h3>The Cube Fall <span class="level-genre">2D Survival</span></h3>
+          <p class="level-desc">Survive falling obstacles as difficulty ramps up over time — built to explore balancing, pacing and performance.</p>
+        </div>
+        <div class="level-loop">Move <span>→</span> React <span>→</span> Survive Longer<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/The_Cube_Fall" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="level">
+        <div class="level-idx">04</div>
+        <div class="level-main">
+          <h3>FPS Survival Game <span class="level-genre">3D Survival Shooter</span></h3>
+          <p class="level-desc">First-person survival shooter combining movement, camera control, shooting, enemy interaction and health systems.</p>
+        </div>
+        <div class="level-loop">Explore <span>→</span> Engage <span>→</span> Survive<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/The_Survival_Game" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="level">
+        <div class="level-idx">05</div>
+        <div class="level-main">
+          <h3>Zombie Shooter <span class="level-genre">Survival Shooter</span></h3>
+          <p class="level-desc">A Unity survival shooter built around wave-based combat — detecting and fighting off zombies while managing health and ammo under pressure.</p>
+        </div>
+        <div class="level-loop">Explore <span>→</span> Detect <span>→</span> Shoot <span>→</span> Survive<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/Zombie-Shooter" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="level">
+        <div class="level-idx">06</div>
+        <div class="level-main">
+          <h3>2D Space Shooter <span class="level-genre">Top-Down Shmup</span></h3>
+          <p class="level-desc">A top-down space shooter focused on enemy waves, projectile handling and score-driven survival, built in Unity.</p>
+        </div>
+        <div class="level-loop">Pilot <span>→</span> Dodge <span>→</span> Shoot <span>→</span> Score<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/2D-Space-Shooter" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="level">
+        <div class="level-idx">07</div>
+        <div class="level-main">
+          <h3>The Stack <span class="level-genre">Arcade</span></h3>
+          <p class="level-desc">A block-stacking arcade game built around precise timing — align each moving block on the stack before it drops to keep your tower growing.</p>
+        </div>
+        <div class="level-loop">Time Drop <span>→</span> Align <span>→</span> Stack <span>→</span> Score<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/The-Stack" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="level">
+        <div class="level-idx">08</div>
+        <div class="level-main">
+          <h3>Rock Paper Scissors <span class="level-genre">Casual / Logic</span></h3>
+          <p class="level-desc">Small logic game built to practice core game logic, UI interaction and clean gameplay programming in C#.</p>
+        </div>
+        <div class="level-loop">Choose <span>→</span> Resolve <span>→</span> Result<br>Unity · C#</div>
+        <a class="level-link" href="https://github.com/Bhargav140206/Rock_Paper_Scissors" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="section-num">02 — How I work</div>
+        <h2 class="section-title">Development process</h2>
+      </div>
+    </div>
+    <p class="section-intro">Here's how I take a project from a rough idea to a finished, playable build.</p>
+    <div class="process-line">
+      <span class="process-step">IDEA</span><span class="process-arrow">→</span>
+      <span class="process-step">CORE LOOP</span><span class="process-arrow">→</span>
+      <span class="process-step">PROTOTYPE</span><span class="process-arrow">→</span>
+      <span class="process-step">PLAYTEST</span><span class="process-arrow">→</span>
+      <span class="process-step">ITERATE</span><span class="process-arrow">→</span>
+      <span class="process-step">BALANCE</span><span class="process-arrow">→</span>
+      <span class="process-step">POLISH</span>
+    </div>
+    <p class="process-note">I combine design thinking with technical implementation: understand the player experience, prototype the idea quickly, test it, identify problems, and use Unity and C# to iterate toward a better game.</p>
+  </div>
+</section>
+
+<section class="section contact" id="contact">
+  <div class="wrap">
+    <div class="contact-inner">
+      <div>
+        <h2 class="contact-title">Let's build<br><span class="accent">games.</span></h2>
+        <p class="contact-sub">Currently looking for job and internship opportunities where I can grow my skills and learn from real development experience.</p>
+        <div class="contact-links">
+          <a class="btn btn-primary" href="mailto:bhargavborgaonkar@gmail.com">bhargavborgaonkar@gmail.com</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/bhargav-borgaonkar-b75718220/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn btn-ghost" href="https://github.com/Bhargav140206" target="_blank" rel="noopener">github.com/Bhargav140206</a>
+        </div>
+      </div>
+      <div class="contact-card">
+        <a class="contact-row" href="mailto:bhargavborgaonkar@gmail.com">
+          <span class="contact-label">Name</span>
+          <span class="contact-value">Bhargav Borgaonkar</span>
+        </a>
+        <a class="contact-row" href="mailto:bhargavborgaonkar@gmail.com">
+          <span class="contact-label">Email</span>
+          <span class="contact-value">bhargavborgaonkar@gmail.com</span>
+        </a>
+        <a class="contact-row" href="https://www.linkedin.com/in/bhargav-borgaonkar-b75718220/" target="_blank" rel="noopener">
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-value">bhargav-borgaonkar</span>
+        </a>
+        <a class="contact-row" href="https://github.com/Bhargav140206" target="_blank" rel="noopener">
+          <span class="contact-label">GitHub</span>
+          <span class="contact-value">Bhargav140206</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>© 2026 BHARGAV BORGAONKAR</span>
+  <span>BUILT WITH UNITY &amp; C#</span>
+</footer>
+
+<script>
+  document.querySelectorAll('.nav-link-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.getAttribute('data-target'));
+      if(target){ target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+
+  var toggleBtn = document.getElementById('toggleProjects');
+  var projectsList = document.getElementById('projectsList');
+  if(toggleBtn && projectsList){
+    toggleBtn.addEventListener('click', function(){
+      var isHidden = projectsList.hasAttribute('hidden');
+      if(isHidden){
+        projectsList.removeAttribute('hidden');
+        toggleBtn.textContent = 'Hide Projects';
+      } else {
+        projectsList.setAttribute('hidden', '');
+        toggleBtn.textContent = 'View Projects';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
